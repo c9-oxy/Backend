@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- MyBatis XML 매퍼 파일 -->
+<!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
 <mapper namespace="vue.example.demo.Mapper.Usermapper"> <!-- 네임스페이스 설정 -->
     <insert id="insertUser">
         INSERT INTO DOJE (USER_ID, USER_PW, USER_NAME, USER_RANK) <!-- 사용자 정보 삽입 -->
         VALUES (#{USER_ID}, #{USER_PW}, #{USER_NAME}, #{USER_RANK}) <!-- 바인딩 변수 사용 -->
     </insert>
-    <select id="signInUser" parameterType="com.example.dto.UserDTO" resultType="hashmap">
-        SELECT USER_ID, USER_NAME, USER_RANK
-        FROM DOJE
-        WHERE USER_ID = #{userId} AND USER_PW = #{userPw}
+
+    <select id="checkUser" parameterType="String" resultType="int">
+        SELECT COUNT(*)
+        FROM USER_TABLE
+        WHERE USER_ID = #{UserId}
     </select>
-    <update id="updateName" parameterType="com.example.dto.UserDTO">
-        UPDATE DOJE
-        SET USER_NAME = #{userNm}
+    <select id="signInUser" parameterType="com.example.dto.UserDTO" resultType="hashmap">
+        SELECT USER_NO, USER_ID, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT
+        FROM USER_TABLE
+        WHERE USER_ID = #{userId} AND USER_PW = #{userPw} AND USER_ACTIVATION = 'Y'
+    </select>
+
+    <update id="updateUser" parameterType="com.example.dto.UserDTO">
+        UPDATE USER_TABLE
+        SET USER_NAME = #{userNm} , USER_RANK = #{userRk}
         WHERE USER_ID = #{userId}
     </update>
-    <update id="updateRank" parameterType="com.example.dto.UserDTO">
-        UPDATE DOJE
-        SET USER_RANK = #{userRk}
-        WHERE USER_ID = #{userId}
-    </update>
-    <delete id="deleteUser" parameterType="String">
-        DELETE FROM DOJE
-        WHERE USER_ID = #{userId}
-    </delete>
+
+    <select id="listUser" parameterType="com.example.dto.UserDTO" resultType="hashmap">
+        SELECT USER_NO, USER_ID, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT
+        FROM USER_TABLE
+        ORDER BY USER_NO ASC
+    </select>
 </mapper>

@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.dto.UserDTO;
 
 import vue.example.demo.Mapper.Usermapper;
 
@@ -18,15 +19,35 @@ import vue.example.demo.Mapper.Usermapper;
 @RestController
 public class UserController {
 
+    UserDTO userDTO = new UserDTO();
+
     @Autowired
+
     private Usermapper usermapper;
 
     @GetMapping("/LoginComponent")
-    public List<HashMap> getUserList() {
+    public List<HashMap> test() {
         return usermapper.User_list();
     }
 
-    @PostMapping("/user")
+    @GetMapping("/signin/{UserId}")
+    public Boolean checkId(@PathVariable String UserId) {
+        try {
+            int count = usermapper.checkUser(UserId);
+            if (count > 0) {
+                System.out.println("id가 존재합니다.");
+                return true;
+            } else {
+                System.out.println("id가 존재하지 않습니다.");
+                return false;
+            }
+        } catch (Exception e) {
+            System.out.println("ID 체크 실패: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @PostMapping("/signup")
     public String registerUser(@RequestBody HashMap<String, String> newUser) {
         try {
             usermapper.insertUser(newUser);
@@ -43,42 +64,28 @@ public class UserController {
             if (user_yn == null) {
                 return null;
             } else {
-                System.err.println(user_yn);
+                System.err.println("유저 로그인 " + user_yn);
                 return user_yn;
             }
         } catch (Exception e) {
-            System.err.println("Failed to register user: " + e.getMessage());
+            System.err.println("로그인 에러. Failed to register user: " + e.getMessage());
             return null;
         }
     }
 
-    @PostMapping("/name")
-    public String updateName(@RequestBody HashMap<String, String> newUser) {
+    @PostMapping("/personal-info") //유저 정보 수정 페이지
+    public String updateUser(@RequestBody HashMap<String, String> newUser) {
         try {
-            usermapper.updateName(newUser);
-            return "이름이 변경되었습니다.";
+            usermapper.updateUser(newUser);
+            return "수정 성공";
         } catch (Exception e) {
-            return "Failed to register user: " + e.getMessage();
+            return "수정 실패, " + e.getMessage();
         }
+
     }
 
-    @PostMapping("/rank")
-    public String updateRank(@RequestBody HashMap<String, String> newUser) {
-        try {
-            usermapper.updateRank(newUser);
-            return "등급이 변경되었습니다.";
-        } catch (Exception e) {
-            return "Failed to register user: " + e.getMessage();
-        }
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteUser(@PathVariable("id") String userId) {
-        try {
-            usermapper.deleteUser(userId);
-            return "User deleted successfully";
-        } catch (Exception e) {
-            return "Failed to delete user: " + e.getMessage();
-        }
+    @GetMapping("/user-list")
+    public List<HashMap> getUserList() {
+        return usermapper.listUser();
     }
 }
