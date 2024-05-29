@@ -35,7 +35,7 @@ public class UserController {
         try {
             int count = usermapper.checkUser(UserId);
             if (count > 0) {
-                System.out.println("id가 존재합니다.");
+                System.out.println("id가 존재합니다");
                 return true;
             } else {
                 System.out.println("id가 존재하지 않습니다.");
