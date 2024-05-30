@@ -7,26 +7,42 @@
         VALUES (#{USER_ID}, #{USER_PW}, #{USER_NAME}, #{USER_RANK}) <!-- 바인딩 변수 사용 -->
     </insert>
 
-    <select id="checkUser" parameterType="String" resultType="int">
-        SELECT COUNT(*)
-        FROM USER_TABLE
-        WHERE USER_ID = #{UserId}
+    <select id="getUser" parameterType="String" resultType="hashmap" >
+    SELECT * FROM USER_TABLE WHERE USER_ID = #{userId}
     </select>
-    <select id="signInUser" parameterType="com.example.dto.UserDTO" resultType="hashmap">
+
+    <select id="signInUser" parameterType="vue.example.demo.DTO.UserDTO" resultType="hashmap">
         SELECT USER_NO, USER_ID, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT
         FROM USER_TABLE
         WHERE USER_ID = #{userId} AND USER_PW = #{userPw} AND USER_ACTIVATION = 'Y'
     </select>
 
-    <update id="updateUser" parameterType="com.example.dto.UserDTO">
+    <update id="updateUser" parameterType="vue.example.demo.DTO.UserDTO">
         UPDATE USER_TABLE
         SET USER_NAME = #{userNm} , USER_RANK = #{userRk}
         WHERE USER_ID = #{userId}
     </update>
 
-    <select id="listUser" parameterType="com.example.dto.UserDTO" resultType="hashmap">
+    <select id="listUser" parameterType="vue.example.demo.DTO.UserDTO" resultType="hashmap">
         SELECT USER_NO, USER_ID, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT
         FROM USER_TABLE
         ORDER BY USER_NO ASC
     </select>
+
+    <update id="resetFailCount" parameterType="String">
+    UPDATE USER_TABLE
+        SET USER_COUNT = 0
+        WHERE USER_ID = #{userId}
+    </update>
+    <update id="notuseUser" parameterType="String">
+    UPDATE USER_TABLE
+        SET USER_ACTIVATION = 'N'
+        WHERE USER_ID = #{userId}
+    </update>
+
+    <update id="plusCounts" parameterType="HashMap">
+    UPDATE USER_TABLE
+        SET USER_COUNT = #{plusCount}
+        WHERE USER_ID = #{userId}
+    </update>
 </mapper>

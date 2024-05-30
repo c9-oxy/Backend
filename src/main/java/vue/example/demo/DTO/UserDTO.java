@@ -16,5 +16,5 @@ public class UserDTO {
     private String USER_NAME;
     private String USER_RANK;
     private String USER_ACTIVATION;
-    private String USER_COUNT;
+    private int USER_COUNT;
 }
