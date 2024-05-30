@@ -2,9 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
 <mapper namespace="vue.example.demo.Mapper.Usermapper"> <!-- 네임스페이스 설정 -->
-    <insert id="insertUser">
-        INSERT INTO DOJE (USER_ID, USER_PW, USER_NAME, USER_RANK) <!-- 사용자 정보 삽입 -->
-        VALUES (#{USER_ID}, #{USER_PW}, #{USER_NAME}, #{USER_RANK}) <!-- 바인딩 변수 사용 -->
+  <insert id="insertUser" parameterType="map">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO USER_TABLE (USER_NO, USER_ID, USER_PW, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT) 
+        VALUES (emp_seq.NEXTVAL, #{USER_ID}, #{USER_PW}, #{USER_NAME}, #{USER_RANK}, 'Y', 0) 
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 
     <select id="getUser" parameterType="String" resultType="hashmap" >
@@ -45,4 +47,18 @@
         SET USER_COUNT = #{plusCount}
         WHERE USER_ID = #{userId}
     </update>
+
+        <!-- id가 중복인지 아닌지를 확인하는 쿼리문 -->
+    <select id="selectId" resultType="int" parameterType="String">
+        <!-- USER_TABLE에서 입력된 USER_ID와 동일한 id의 개수를 셈 -->
+        SELECT COUNT(*)
+        FROM USER_TABLE
+        WHERE USER_ID = #{UserId}
+    </select>
+
+    <select id="selectName" resultType="int" parameterType="String">
+        SELECT COUNT(*)
+        FROM USER_TABLE
+        WHERE USER_NAME = #{UserName}
+    </select>
 </mapper>
