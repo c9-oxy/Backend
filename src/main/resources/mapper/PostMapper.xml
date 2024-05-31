@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
+<mapper namespace="vue.example.demo.Mapper.Postmapper"> <!-- 네임스페이스 설정 -->
+    <!-- 전체 글 보기 기능을 수행할 때 사용되는 쿼리 -->
+    <select id="getPostList" parameterType="vue.example.demo.DTO.PostDTO" resultType="hashmap" >
+        SELECT POST_NO, BOARD_ID, POST_TITLE, POST_AUTHOR, POST_TIME
+        FROM POST_TABLE
+        WHERE BOARD_ID = #{boardId}
+        GROUP BY POST_NO, BOARD_ID, POST_TITLE, POST_AUTHOR, POST_TIME
+        ORDER BY POST_NO DESC
+    </select>
+
+    <!-- 글 상세 보기(글 내용보기) 기능을 수행할 때 사용되는 쿼리 -->
+    <select id="getPostContent" parameterType="vue.example.demo.DTO.PostDTO" resultType="hashmap" >
+        SELECT POST_TITLE, DBMS_LOB.SUBSTR(POST_CONTENT, DBMS_LOB.GETLENGTH(POST_CONTENT)) AS POST_CONTENT, POST_AUTHOR, POST_TIME
+        FROM POST_TABLE
+        WHERE BOARD_ID = #{boardId} AND POST_NO = #{postNo}
+    </select>
+
+</mapper>

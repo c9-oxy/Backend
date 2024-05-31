@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
+<mapper namespace="vue.example.demo.Mapper.Boardmapper"> <!-- 네임스페이스 설정 -->
+
+    <select id="getBoards" parameterType="String" resultType="hashmap" >
+        SELECT *
+        FROM BOARD_TABLE
+        WHERE BOARD_NAME LIKE '%' ||  #{searchWord} || '%'
+    </select>
+    
+    <select id="getBoardId" parameterType="String" resultType="hashmap" >
+        SELECT BOARD_ID
+        FROM BOARD_TABLE
+        WHERE BOARD_ID = #{boardId}
+    </select>
+</mapper>

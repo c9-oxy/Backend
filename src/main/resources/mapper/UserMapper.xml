@@ -61,4 +61,5 @@
         FROM USER_TABLE
         WHERE USER_NAME = #{UserName}
     </select>
+
 </mapper>
