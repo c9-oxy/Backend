@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import vue.example.demo.Mapper.Boardmapper;
@@ -22,7 +24,7 @@ public class PostController {
     @Autowired
     private Boardmapper boardmapper;
 
-    @GetMapping("/post/{boardId}")
+    @GetMapping("/board/post/{boardId}")
     public List<HashMap> postList(@PathVariable String boardId) { //게시판 id와 일치하는 post들을 반환하는 함수
         try {
             List<HashMap> result = postmapper.getPostList(boardId); //이하 board search와 같음
@@ -30,7 +32,6 @@ public class PostController {
 
                 return null;
             } else {
-                System.out.println("포스트 결과: " + result);
                 return result;
             }
         } catch (Exception e) {
@@ -39,7 +40,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/view/{boardId}/{postNo}") //먼저 게시판id와 글 번호를 가져옵니다.
+    @GetMapping("/board/view/{boardId}/{postNo}") //먼저 게시판id와 글 번호를 가져옵니다.
     public HashMap getMethodName(@PathVariable String boardId, @PathVariable String postNo) { //PathVariable을 두 개 사용해서 두 개의 매개변수를 선언합니다.
         try {
             HashMap board = boardmapper.getBoardId(boardId); //boardId 매개변수를 통해 boardmapper에서 boardId를 가져옵니다.
@@ -55,6 +56,17 @@ public class PostController {
 
             System.out.println("콘텐츠 검색 실패: " + e.getMessage());
             return null;
+        }
+    }
+
+    @PostMapping("/board/write")
+    public void registerUser(@RequestBody HashMap<String, String> newPost) {
+        try {
+            // 새 post 정보를 DB에 삽입
+            postmapper.insertPost(newPost);
+        } catch (Exception e) {
+            System.out.println("글 작성 실패: " + e.getMessage());
+            // 예외 발생하면 실패 메시지를 반환
         }
     }
 

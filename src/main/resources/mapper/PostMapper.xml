@@ -18,4 +18,15 @@
         WHERE BOARD_ID = #{boardId} AND POST_NO = #{postNo}
     </select>
 
+    <insert id="insertPost" parameterType="hashmap">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO POST_TABLE 
+        VALUES (POST_SEQ.NEXTVAL,#{boardId},#{postTitle},#{postContent},#{userId},sysdate,'N',null)
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
+
+    
+    
+    
+
 </mapper>

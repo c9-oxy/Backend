@@ -30,4 +30,6 @@ public interface Usermapper { //인터페이스에서 각 쿼리들을 호출이
 
     void insertUser(HashMap<String, String> newUser);
 
+    List<HashMap> getMyPosts(String userId);
+
 }

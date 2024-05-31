@@ -8,10 +8,17 @@
         FROM BOARD_TABLE
         WHERE BOARD_NAME LIKE '%' ||  #{searchWord} || '%'
     </select>
-    
+
     <select id="getBoardId" parameterType="String" resultType="hashmap" >
         SELECT BOARD_ID
         FROM BOARD_TABLE
         WHERE BOARD_ID = #{boardId}
     </select>
+
+    <insert id="insertPost" parameterType="map">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO USER_TABLE (USER_NO, USER_ID, USER_PW, USER_NAME, USER_RANK, USER_ACTIVATION, USER_COUNT) 
+        VALUES (emp_seq.NEXTVAL, #{USER_ID}, #{USER_PW}, #{USER_NAME}, #{USER_RANK}, 'Y', 0) 
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
 </mapper>

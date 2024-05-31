@@ -62,4 +62,14 @@
         WHERE USER_NAME = #{UserName}
     </select>
 
+    <!-- 내가 쓴 글 목록 -->
+    <select id="getMyPosts" parameterType="String" resultType="hashmap" >
+        SELECT b.BOARD_ID, b.BOARD_NAME, p.POST_NO, p.POST_TITLE, p.POST_TIME
+        FROM BOARD_TABLE b
+        JOIN POST_TABLE p
+        ON b.BOARD_ID = p.BOARD_ID
+        WHERE p.POST_AUTHOR = #{userId}
+        ORDER BY p.POST_TIME DESC
+    </select>
+
 </mapper>

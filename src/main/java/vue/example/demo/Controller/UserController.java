@@ -19,13 +19,17 @@ import vue.example.demo.Mapper.Usermapper;
 
 import org.springframework.web.bind.annotation.PutMapping;
 
+import vue.example.demo.Mapper.Postmapper;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 public class UserController {
 
     @Autowired
-
     private Usermapper usermapper;
+
+    @Autowired
+    private Postmapper postmapper;
 
     @PostMapping("/signin")
     public HashMap signInUser(@RequestBody HashMap<String, String> newUser) {
@@ -102,8 +106,8 @@ public class UserController {
             usermapper.insertUser(newUser);
             return "회원가입 성공";
         } catch (Exception e) {
-            System.out.println("회원가입 실패: " + e.getMessage());
-            // 예외 발생하면 회원가입 실패 메시지를 반환
+            System.out.println("회원가입 실패1: " + e.getMessage());
+            // 예외 발생하면 회원가입실패 메시지를 반환
             return "회원가입 실패: " + e.getMessage();
         }
     }
@@ -143,6 +147,21 @@ public class UserController {
         } catch (Exception e) {
             System.out.println("NAME 체크 실패: " + e.getMessage());
             return false;
+        }
+    }
+
+    @GetMapping("/profile/post/{userId}")
+    public List<HashMap> postList(@PathVariable String userId) { //게시판 id와 일치하는 post들을 반환하는 함수
+        try {
+            List<HashMap> result = usermapper.getMyPosts(userId); //이하 board search와 같음
+            if (result == null) {
+                return null;
+            } else {
+                return result;
+            }
+        } catch (Exception e) {
+            System.out.println("검색 실패: " + e.getMessage());
+            return null;
         }
     }
 
