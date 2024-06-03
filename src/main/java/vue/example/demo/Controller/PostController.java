@@ -24,7 +24,7 @@ public class PostController {
     @Autowired
     private Boardmapper boardmapper;
 
-    @GetMapping("/board/post/{boardId}")
+    @GetMapping("/posts/{boardId}")
     public List<HashMap> postList(@PathVariable String boardId) { //게시판 id와 일치하는 post들을 반환하는 함수
         try {
             List<HashMap> result = postmapper.getPostList(boardId); //이하 board search와 같음
@@ -40,7 +40,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/board/view/{boardId}/{postNo}") //먼저 게시판id와 글 번호를 가져옵니다.
+    @GetMapping("/posts/{boardId}/{postNo}") //먼저 게시판id와 글 번호를 가져옵니다.
     public HashMap getMethodName(@PathVariable String boardId, @PathVariable String postNo) { //PathVariable을 두 개 사용해서 두 개의 매개변수를 선언합니다.
         try {
             HashMap board = boardmapper.getBoardId(boardId); //boardId 매개변수를 통해 boardmapper에서 boardId를 가져옵니다.
@@ -59,7 +59,7 @@ public class PostController {
         }
     }
 
-    @PostMapping("/board/write")
+    @PostMapping("/posts")
     public void registerUser(@RequestBody HashMap<String, String> newPost) {
         try {
             // 새 post 정보를 DB에 삽입
