@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
-<mapper namespace="vue.example.demo.Mapper.Postmapper"> <!-- 네임스페이스 설정 -->
-    <!-- 전체 글 보기 기능을 수행할 때 사용되는 쿼리 -->
+<!-- 여기서 쿼리문 작성 -->
+<mapper namespace="vue.example.demo.Mapper.Postmapper"> <!-- namespace 설정 -->
+    <!-- 전체 글 보기 -->
     <select id="getPostList" parameterType="vue.example.demo.DTO.PostDTO" resultType="hashmap" >
-        SELECT POST_NO, BOARD_ID, POST_TITLE, POST_AUTHOR, POST_TIME
-        FROM POST_TABLE
-        WHERE BOARD_ID = #{boardId}
-        GROUP BY POST_NO, BOARD_ID, POST_TITLE, POST_AUTHOR, POST_TIME
-        ORDER BY POST_NO DESC
+        SELECT p.POST_NO, p.BOARD_ID, p.POST_TITLE, p.POST_AUTHOR, p.POST_TIME, COUNT(c.COMM_NO) AS TOTAL, POST_EDITS, POST_EDIT_TIME
+        FROM POST_TABLE p
+        LEFT JOIN COMMENT_TABLE c ON p.POST_NO = c.POST_NO
+        WHERE p.BOARD_ID = #{boardId}
+        GROUP BY p.POST_NO, p.BOARD_ID, p.POST_TITLE, p.POST_AUTHOR, p.POST_TIME, POST_EDITS, POST_EDIT_TIME
+        ORDER BY p.POST_NO DESC
     </select>
 
-    <!-- 글 상세 보기(글 내용보기) 기능을 수행할 때 사용되는 쿼리 -->
+    <!-- 글 상세 보기(글 내용보기) -->
     <select id="getPostContent" parameterType="vue.example.demo.DTO.PostDTO" resultType="hashmap" >
-        SELECT POST_TITLE, DBMS_LOB.SUBSTR(POST_CONTENT, DBMS_LOB.GETLENGTH(POST_CONTENT)) AS POST_CONTENT, POST_AUTHOR, POST_TIME
-        FROM POST_TABLE
-        WHERE BOARD_ID = #{boardId} AND POST_NO = #{postNo}
+        SELECT p.POST_TITLE, DBMS_LOB.SUBSTR(p.POST_CONTENT, DBMS_LOB.GETLENGTH(p.POST_CONTENT)) AS POST_CONTENT, p.POST_AUTHOR, p.POST_TIME, POST_EDITS, POST_EDIT_TIME
+        FROM POST_TABLE p
+        WHERE p.BOARD_ID = #{boardId} AND p.POST_NO = #{postNo}
+        GROUP BY p.POST_TITLE, DBMS_LOB.SUBSTR(p.POST_CONTENT, DBMS_LOB.GETLENGTH(p.POST_CONTENT)), p.POST_AUTHOR, p.POST_TIME, POST_EDITS, POST_EDIT_TIME
     </select>
 
     <insert id="insertPost" parameterType="hashmap">
@@ -25,7 +27,18 @@
         <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 
-    
+    <update id="updatePost" parameterType="hashmap">
+        UPDATE POST_TABLE 
+        SET POST_TITLE = #{postTitle},  
+        POST_CONTENT = #{postContent},
+        POST_EDITS = 'Y',
+        POST_EDIT_TIME = sysdate
+        WHERE POST_NO = #{postNo}
+    </update>
+
+    <delete id="deletePost" parameterType="int">
+        DELETE FROM POST_TABLE WHERE POST_NO = #{postNo}
+    </delete>
     
     
 

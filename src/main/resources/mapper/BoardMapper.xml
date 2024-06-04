@@ -9,6 +9,14 @@
         WHERE BOARD_NAME LIKE '%' ||  #{searchWord} || '%'
     </select>
 
+    <select id="getBoardCount" parameterType="String" resultType="hashmap" >
+        SELECT p.BOARD_ID, b.BOARD_NAME, COUNT(p.BOARD_ID) AS TOTAL
+        FROM POST_TABLE p
+        JOIN BOARD_TABLE b ON p.BOARD_ID = b.BOARD_ID
+        GROUP BY p.BOARD_ID, b.BOARD_NAME
+        ORDER BY TOTAL DESC
+    </select>
+
     <select id="getBoardId" parameterType="String" resultType="hashmap" >
         SELECT BOARD_ID, BOARD_NAME
         FROM BOARD_TABLE

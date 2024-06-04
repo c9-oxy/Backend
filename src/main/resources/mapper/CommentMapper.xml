@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTO Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- MyBatis XML 매퍼 파일. 여기서 쿼리문을 작성합니다. -->
+<mapper namespace="vue.example.demo.Mapper.Commentmapper"> <!-- 네임스페이스 설정 -->
+    <select id="getComments" parameterType="String" resultType="hashmap" >
+        SELECT c.COMM_NO, c.COMM_CONTENT, u.USER_NAME, c.POST_NO, c.COMM_CLASS, c.COMM_ORDER, c.COMM_GROUP
+        FROM COMMENT_TABLE c
+        JOIN USER_TABLE u ON c.COMM_AUTHOR = u.USER_ID
+        WHERE c.POST_NO = #{postNo}
+        GROUP BY c.COMM_NO, c.COMM_CONTENT, u.USER_NAME, c.POST_NO, c.COMM_CLASS, c.COMM_ORDER, c.COMM_GROUP
+        ORDER BY c.COMM_NO ASC
+    </select>
+    <insert id="insertComment" parameterType="hashmap">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO POST_TABLE 
+        VALUES (POST_SEQ.NEXTVAL,#{boardId},#{postTitle},#{postContent},#{userId},sysdate,'N',null)
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
+</mapper>

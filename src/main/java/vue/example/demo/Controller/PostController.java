@@ -5,9 +5,11 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,17 +42,19 @@ public class PostController {
         }
     }
 
-    @GetMapping("/posts/{boardId}/{postNo}") //먼저 게시판id와 글 번호를 가져옵니다.
+    @GetMapping("/posts/{boardId}/{postNo}") //글의 내용을 보는 코드입니다. 먼저 게시판id와 글 번호를 가져옵니다.
     public HashMap getMethodName(@PathVariable String boardId, @PathVariable String postNo) { //PathVariable을 두 개 사용해서 두 개의 매개변수를 선언합니다.
         try {
             HashMap board = boardmapper.getBoardId(boardId); //boardId 매개변수를 통해 boardmapper에서 boardId를 가져옵니다.
             String id = (String) board.get("BOARD_ID"); //boardId를 id 변수에 적용합니다.
-
+            System.out.println("도중" + board + id);
             HashMap<String, String> post = new HashMap<String, String>(); //그리고 post라는 해시맵을 선언합니다.
             post.put("boardId", id); //해시맵 내에 id와 postNo를 넣습니다.
             post.put("postNo", postNo);
+            System.out.println("도중2" + post);
 
             HashMap result = postmapper.getPostContent(post); //이것을 postmapper의 getPostContent에 보내 post의 제목, 내용 등을 불러옵니다.
+            System.out.println("결과" + result);
             return result; //이를 리턴합니다.
         } catch (Exception e) {
 
@@ -67,6 +71,28 @@ public class PostController {
         } catch (Exception e) {
             System.out.println("글 작성 실패: " + e.getMessage());
             // 예외 발생하면 실패 메시지를 반환
+        }
+    }
+
+    @PutMapping("/posts")
+    public void updatePost(@RequestBody HashMap<String, String> updatePost) {
+        try {
+            // 업데이트할 post 정보를 DB에 반영
+            postmapper.updatePost(updatePost);
+        } catch (Exception e) {
+            System.out.println("글 업데이트 실패: " + e.getMessage());
+            // 예외 발생 시 실패 메시지 반환
+        }
+    }
+
+    @DeleteMapping("/posts/{postNo}") // POST_NO 번호를 가져와 삭제
+    public void deletePost(@PathVariable int postNo) {
+        try {
+            // postNo에 해당하는 게시글을 DB에서 삭제
+            postmapper.deletePost(postNo);
+        } catch (Exception e) {
+            System.out.println("글 삭제 실패: " + e.getMessage());
+            // 예외 발생 시 실패 메시지 반환
         }
     }
 

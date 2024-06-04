@@ -12,4 +12,6 @@ public interface Boardmapper { //인터페이스에서 각 쿼리들을 호출�
 
     HashMap getBoardId(String boardId);
 
+    List<HashMap> getBoardCount();
+
 }
