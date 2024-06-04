@@ -12,8 +12,8 @@
     </select>
     <insert id="insertComment" parameterType="hashmap">
         <!-- USER_TABLE에 데이터 삽입 -->
-        INSERT INTO POST_TABLE 
-        VALUES (POST_SEQ.NEXTVAL,#{boardId},#{postTitle},#{postContent},#{userId},sysdate,'N',null)
+        INSERT INTO COMMENT_TABLE
+        VALUES (COMMENT_SEQ.NEXTVAL, #{commContent}, #{commPostNo}, #{commClass}, 0, #{commGroup}, #{userId}, SYSDATE)
         <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 </mapper>

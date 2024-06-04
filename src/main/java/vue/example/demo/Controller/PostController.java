@@ -47,14 +47,11 @@ public class PostController {
         try {
             HashMap board = boardmapper.getBoardId(boardId); //boardId 매개변수를 통해 boardmapper에서 boardId를 가져옵니다.
             String id = (String) board.get("BOARD_ID"); //boardId를 id 변수에 적용합니다.
-            System.out.println("도중" + board + id);
             HashMap<String, String> post = new HashMap<String, String>(); //그리고 post라는 해시맵을 선언합니다.
             post.put("boardId", id); //해시맵 내에 id와 postNo를 넣습니다.
             post.put("postNo", postNo);
-            System.out.println("도중2" + post);
 
             HashMap result = postmapper.getPostContent(post); //이것을 postmapper의 getPostContent에 보내 post의 제목, 내용 등을 불러옵니다.
-            System.out.println("결과" + result);
             return result; //이를 리턴합니다.
         } catch (Exception e) {
 
