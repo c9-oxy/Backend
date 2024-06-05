@@ -12,4 +12,6 @@ public interface Commentmapper { //인터페이스에서 각 쿼리들을 호출
 
     void insertComment(HashMap<String, String> newPost);
 
+    void insertReply(HashMap<String, String> newPost);
+
 }

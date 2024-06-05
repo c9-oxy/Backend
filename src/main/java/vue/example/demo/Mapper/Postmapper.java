@@ -12,7 +12,7 @@ public interface Postmapper { //인터페이스에서 각 쿼리들을 호출이
 
     HashMap getPostContent(HashMap<String, String> newPost);
 
-    void insertPost(HashMap<String, String> newPost);
+    int insertPost(HashMap<String, String> newPost);
 
     void updatePost(HashMap<String, String> updatePost);
 

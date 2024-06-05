@@ -13,6 +13,12 @@
     <insert id="insertComment" parameterType="hashmap">
         <!-- USER_TABLE에 데이터 삽입 -->
         INSERT INTO COMMENT_TABLE
+        VALUES (COMMENT_SEQ.NEXTVAL, #{commContent}, #{commPostNo}, #{commClass}, 0, GROUP_SEQ.NEXTVAL, #{userId}, SYSDATE)
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
+    <insert id="insertReply" parameterType="hashmap">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO COMMENT_TABLE
         VALUES (COMMENT_SEQ.NEXTVAL, #{commContent}, #{commPostNo}, #{commClass}, 0, #{commGroup}, #{userId}, SYSDATE)
         <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>

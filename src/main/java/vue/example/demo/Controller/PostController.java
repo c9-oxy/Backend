@@ -61,10 +61,13 @@ public class PostController {
     }
 
     @PostMapping("/posts")
-    public void registerUser(@RequestBody HashMap<String, String> newPost) {
+    public void registerUser(@RequestBody HashMap newPost) {
         try {
             // 새 post 정보를 DB에 삽입
             postmapper.insertPost(newPost);
+            System.out.println("newPost");
+            int post_no = (int) newPost.get("POST_SEQ");
+            System.out.println(post_no);
         } catch (Exception e) {
             System.out.println("글 작성 실패: " + e.getMessage());
             // 예외 발생하면 실패 메시지를 반환
@@ -76,6 +79,7 @@ public class PostController {
         try {
             // 업데이트할 post 정보를 DB에 반영
             postmapper.updatePost(updatePost);
+            System.out.println();
         } catch (Exception e) {
             System.out.println("글 업데이트 실패: " + e.getMessage());
             // 예외 발생 시 실패 메시지 반환

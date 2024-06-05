@@ -43,6 +43,7 @@ public class CommentController {
     @PostMapping("/comments") //댓글 입력 관리
     public void registerUser(@RequestBody HashMap<String, String> newComm) {
         try {
+            
             System.out.println("전송받은 값: " + newComm);
             if (newComm.get("commClass").equals("0")) { //만약 댓글 클래스가 0, 부모 댓글일 경우(참고로 받아와지는게 문자열임)
                 newComm.put("commGroup", "GROUP_SEQ.NEXTVAL");
@@ -51,7 +52,7 @@ public class CommentController {
                 System.out.println("댓글 클래스: " + newComm.get("commClass"));
                 newComm.put("commGroup", newComm.get("commGroup"));
                 System.out.println("자식 값: " + newComm);
-                commentmapper.insertComment(newComm); //바로 데이터 전송
+                commentmapper.insertReply(newComm); //바로 데이터 전송
 
             }
             // 새 post 정보를 DB에 삽입

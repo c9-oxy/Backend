@@ -24,6 +24,10 @@
         <!-- USER_TABLE에 데이터 삽입 -->
         INSERT INTO POST_TABLE 
         VALUES (POST_SEQ.NEXTVAL,#{boardId},#{postTitle},#{postContent},#{userId},sysdate,'N',null)
+
+        <selectKey keyProperty="POST_SEQ" resultType="int" order="AFTER">
+        SELECT POST_SEQ.CURRVAL FROM DUAL
+    </selectKey>
         <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 
