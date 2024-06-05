@@ -45,5 +45,25 @@
     </delete>
     
     
+    <select id="checkTag" resultType="int" parameterType="String">
+        select count(tag_name) as total
+        from tag_table
+        where tag_name = #{tagName}
+    </select>
 
+    <insert id="insertTag" parameterType="String">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO TAG_TABLE
+        VALUES (TAG_SEQ.NEXTVAL, #{tagName})
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
+
+    <insert id="insertMatch" parameterType="hashmap">
+        <!-- USER_TABLE에 데이터 삽입 -->
+        INSERT INTO post_tag_match_table
+        VALUES (#{postNo}, #{tagName})
+        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
+    </insert>
+
+    
 </mapper>

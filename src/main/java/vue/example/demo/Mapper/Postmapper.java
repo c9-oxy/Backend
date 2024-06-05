@@ -18,4 +18,11 @@ public interface Postmapper { //인터페이스에서 각 쿼리들을 호출이
 
     void deletePost(int deletePost);
 
+    ///////tag
+    int checkTag(String tagName);
+
+    void insertTag(String tagName);
+
+    void insertMatch(HashMap<String, String> newTag);
+
 }

@@ -60,14 +60,43 @@ public class PostController {
         }
     }
 
-    @PostMapping("/posts")
+    @PostMapping("/posts") //글 작성 함수
     public void registerUser(@RequestBody HashMap newPost) {
         try {
             // 새 post 정보를 DB에 삽입
             postmapper.insertPost(newPost);
             System.out.println("newPost");
-            int post_no = (int) newPost.get("POST_SEQ");
-            System.out.println(post_no);
+
+            List<String> tags = (List<String>) newPost.get("postTags");
+            if (tags.size() != 0) { //태그 유무 체크
+                String postNo = Integer.toString((int) newPost.get("POST_SEQ")); //추가하는 post의 번호 추출
+
+                System.out.println(postNo + "배열사이즈는: " + tags.size());
+
+                HashMap<String, String> tagMatch = new HashMap<String, String>(); //그리고 post라는 해시맵을 선언합니다.
+                for (int i = 0; i < tags.size(); i++) { //반복문을 통해 게시물에 태그를 적용
+
+                    String tagName = tags.get(i);
+                    int isTag = Integer.parseInt(String.valueOf(postmapper.checkTag(tagName)));
+                    if (isTag > 0) {
+                        tagMatch.put("postNo", postNo);
+                        tagMatch.put("tagName", tags.get(i));
+
+                        postmapper.insertMatch(tagMatch);
+
+                    } else {
+                        postmapper.insertTag(tagName);
+
+                        tagMatch.put("postNo", postNo);
+                        tagMatch.put("tagName", tags.get(i));
+
+                        postmapper.insertMatch(tagMatch);
+                    }
+
+                    System.out.println(tagMatch);
+
+                }
+            }
         } catch (Exception e) {
             System.out.println("글 작성 실패: " + e.getMessage());
             // 예외 발생하면 실패 메시지를 반환
