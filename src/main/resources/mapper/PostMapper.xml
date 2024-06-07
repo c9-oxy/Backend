@@ -26,8 +26,8 @@
         VALUES (POST_SEQ.NEXTVAL,#{boardId},#{postTitle},#{postContent},#{userId},sysdate,'N',null)
 
         <selectKey keyProperty="POST_SEQ" resultType="int" order="AFTER">
-        SELECT POST_SEQ.CURRVAL FROM DUAL
-    </selectKey>
+            SELECT POST_SEQ.CURRVAL FROM DUAL
+        </selectKey>
         <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 
@@ -38,6 +38,11 @@
         POST_EDITS = 'Y',
         POST_EDIT_TIME = sysdate
         WHERE POST_NO = #{postNo}
+        <selectKey keyProperty="POST_NO" resultType="int" order="AFTER">
+            SELECT POST_NO
+            FROM POST_TABLE
+            WHERE POST_NO = #{postNo}
+        </selectKey>
     </update>
 
     <delete id="deletePost" parameterType="int">

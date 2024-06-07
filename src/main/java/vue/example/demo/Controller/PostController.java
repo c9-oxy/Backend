@@ -102,11 +102,36 @@ public class PostController {
         }
     }
 
-    @PutMapping("/posts")
-    public void updatePost(@RequestBody HashMap<String, String> updatePost) {
+    @PutMapping("/posts") //포스트 업데이트
+    public void updatePost(@RequestBody HashMap updatePost) {
         try {
             // 업데이트할 post 정보를 DB에 반영
             postmapper.updatePost(updatePost);
+            List<String> tags = (List<String>) updatePost.get("postTags");
+
+            if (tags.size() != 0) { //태그 유무 체크
+                String postNo = Integer.toString((int) updatePost.get("POST_NO")); //추가하는 post의 번호 추출
+                System.out.println("글번호:" + postNo);
+                HashMap<String, String> tagMatch = new HashMap<String, String>(); //그리고 post라는 해시맵을 선언합니다.
+
+                for (int i = 0; i < tags.size(); i++) { //반복문을 통해 게시물에 태그를 적용
+                    String tagName = tags.get(i); //태그네임 선언
+                    int isTag = Integer.parseInt(String.valueOf(postmapper.checkTag(tagName))); //해당 태그가 이미 존재하는지 검색
+
+                    if (isTag > 0) { //해당 태그가 존재한다면
+                        tagMatch.put("postNo", postNo);
+                        tagMatch.put("tagName", tags.get(i));
+                        postmapper.insertMatch(tagMatch); //태그 매치 테이블에 포스트 번호와 태그네임 삽입
+
+                    } else { //해당 태그가 존재하지 않는다면
+                        postmapper.insertTag(tagName); //태그 테이블에 생성된 태그 삽입
+                        tagMatch.put("postNo", postNo); //이후 동일
+                        tagMatch.put("tagName", tags.get(i));
+                        postmapper.insertMatch(tagMatch);
+                    }
+                }
+            }
+
         } catch (Exception e) {
             System.out.println("글 업데이트 실패: " + e.getMessage());
             // 예외 발생 시 실패 메시지 반환
