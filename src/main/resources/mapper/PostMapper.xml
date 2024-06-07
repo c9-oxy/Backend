@@ -44,26 +44,47 @@
         DELETE FROM POST_TABLE WHERE POST_NO = #{postNo}
     </delete>
     
-    
-    <select id="checkTag" resultType="int" parameterType="String">
-        select count(tag_name) as total
-        from tag_table
-        where tag_name = #{tagName}
+    <!-- 태그 -->
+    <select id="checkTag" resultType="int" parameterType="String"> 
+    <!-- 해당 태그가 존재하는지 카운트 -->
+        SELECT COUNT(TAG_NAME) AS TOTAL
+        FROM TAG_TABLE
+        WHERE TAG_NAME = #{tagName}
     </select>
 
+    <select id="checkPostTag" resultType="int" parameterType="String"> 
+    <!-- 포스트에 태그가 존재하는지 카운트 -->
+        SELECT COUNT(POST_NO) AS total
+        FROM POST_TAG_MATCH_TABLE
+        WHERE POST_NO = #{postNo}
+    </select>
+
+    <select id="getPostTag" resultType="hashmap" parameterType="String"> 
+    <!-- 태그 꺼내기 -->
+        SELECT TAG_NAME
+        FROM POST_TAG_MATCH_TABLE
+        WHERE POST_NO = #{postNo}
+    </select>
+    
     <insert id="insertTag" parameterType="String">
-        <!-- USER_TABLE에 데이터 삽입 -->
         INSERT INTO TAG_TABLE
         VALUES (TAG_SEQ.NEXTVAL, #{tagName})
-        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
 
     <insert id="insertMatch" parameterType="hashmap">
-        <!-- USER_TABLE에 데이터 삽입 -->
+    <!-- 포스트&태그 매치 테이블에 적용 -->
         INSERT INTO post_tag_match_table
         VALUES (#{postNo}, #{tagName})
-        <!-- #{변수} 형태로 바인딩 변수를 사용하여 데이터를 삽입 -->
     </insert>
+
+    <select id="searchTag" parameterType="String" resultType="hashmap">
+        SELECT m.tag_name, p.POST_NO, p.board_id, p.post_title, u.user_name, p.post_time, p.post_edits, p.post_edit_time
+        FROM post_tag_match_table m
+        LEFT JOIN post_table p ON p.post_no = m.post_no
+        LEFT JOIN user_table u ON p.post_author = u.user_id
+        WHERE m.tag_name = #{tagName}
+        ORDER BY p.post_no DESC
+    </select>
 
     
 </mapper>

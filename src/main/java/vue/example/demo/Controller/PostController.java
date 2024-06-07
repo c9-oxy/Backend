@@ -51,7 +51,15 @@ public class PostController {
             post.put("boardId", id); //해시맵 내에 id와 postNo를 넣습니다.
             post.put("postNo", postNo);
 
+            int isPostTag = postmapper.checkPostTag(postNo);
             HashMap result = postmapper.getPostContent(post); //이것을 postmapper의 getPostContent에 보내 post의 제목, 내용 등을 불러옵니다.
+
+            if (isPostTag > 0) {
+                List<HashMap> getPostTags = postmapper.getPostTag(postNo);
+                result.put("POST_TAG", getPostTags);
+            }
+            System.out.println(result);
+
             return result; //이를 리턴합니다.
         } catch (Exception e) {
 
@@ -65,36 +73,27 @@ public class PostController {
         try {
             // 새 post 정보를 DB에 삽입
             postmapper.insertPost(newPost);
-            System.out.println("newPost");
-
             List<String> tags = (List<String>) newPost.get("postTags");
+
             if (tags.size() != 0) { //태그 유무 체크
                 String postNo = Integer.toString((int) newPost.get("POST_SEQ")); //추가하는 post의 번호 추출
-
-                System.out.println(postNo + "배열사이즈는: " + tags.size());
-
                 HashMap<String, String> tagMatch = new HashMap<String, String>(); //그리고 post라는 해시맵을 선언합니다.
+
                 for (int i = 0; i < tags.size(); i++) { //반복문을 통해 게시물에 태그를 적용
+                    String tagName = tags.get(i); //태그네임 선언
+                    int isTag = Integer.parseInt(String.valueOf(postmapper.checkTag(tagName))); //해당 태그가 이미 존재하는지 검색
 
-                    String tagName = tags.get(i);
-                    int isTag = Integer.parseInt(String.valueOf(postmapper.checkTag(tagName)));
-                    if (isTag > 0) {
+                    if (isTag > 0) { //해당 태그가 존재한다면
                         tagMatch.put("postNo", postNo);
                         tagMatch.put("tagName", tags.get(i));
+                        postmapper.insertMatch(tagMatch); //태그 매치 테이블에 포스트 번호와 태그네임 삽입
 
-                        postmapper.insertMatch(tagMatch);
-
-                    } else {
-                        postmapper.insertTag(tagName);
-
-                        tagMatch.put("postNo", postNo);
+                    } else { //해당 태그가 존재하지 않는다면
+                        postmapper.insertTag(tagName); //태그 테이블에 생성된 태그 삽입
+                        tagMatch.put("postNo", postNo); //이후 동일
                         tagMatch.put("tagName", tags.get(i));
-
                         postmapper.insertMatch(tagMatch);
                     }
-
-                    System.out.println(tagMatch);
-
                 }
             }
         } catch (Exception e) {
@@ -108,7 +107,6 @@ public class PostController {
         try {
             // 업데이트할 post 정보를 DB에 반영
             postmapper.updatePost(updatePost);
-            System.out.println();
         } catch (Exception e) {
             System.out.println("글 업데이트 실패: " + e.getMessage());
             // 예외 발생 시 실패 메시지 반환
@@ -123,6 +121,22 @@ public class PostController {
         } catch (Exception e) {
             System.out.println("글 삭제 실패: " + e.getMessage());
             // 예외 발생 시 실패 메시지 반환
+        }
+    }
+
+    @GetMapping("/tags/{tagName}")
+    public List<HashMap> WooJoon(@PathVariable String tagName) {
+        try {
+            List<HashMap> result = postmapper.searchTag(tagName); // '황우준' 태그를 기반으로 게시글을 검색
+            if (result == null || result.isEmpty()) { // 만약 일치하는 게시글이 없을 시 null 반환
+                return null;
+            } else {
+                // 1개 이상일 시 태그 이름과 일치하는 게시글을 list 형태로 반환
+                return result; // 값 반환
+            }
+        } catch (Exception e) {
+            System.out.println("검색 실패: " + e.getMessage());
+            return null;
         }
     }
 

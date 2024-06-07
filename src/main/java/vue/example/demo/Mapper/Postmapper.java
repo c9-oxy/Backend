@@ -21,8 +21,14 @@ public interface Postmapper { //인터페이스에서 각 쿼리들을 호출이
     ///////tag
     int checkTag(String tagName);
 
+    int checkPostTag(String postNo);
+
     void insertTag(String tagName);
 
     void insertMatch(HashMap<String, String> newTag);
+
+    List<HashMap> getPostTag(String postNo);
+
+    List<HashMap> searchTag(String tagName);
 
 }

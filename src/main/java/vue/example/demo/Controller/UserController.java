@@ -1,25 +1,19 @@
 package vue.example.demo.Controller;
 
-import java.awt.PageAttributes;
-import java.net.http.HttpHeaders;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import vue.example.demo.Mapper.Usermapper;
-
-import org.springframework.web.bind.annotation.PutMapping;
-
 import vue.example.demo.Mapper.Postmapper;
+import vue.example.demo.Mapper.Usermapper;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -45,14 +39,14 @@ public class UserController {
                     return null; //null을 반환
                 } else {
                     if (newUser.get("userPw").equals(user.get("USER_PW"))) { //비밀번호가 일치할 시(로그인 성공 시)
-                        int failCount = Integer.parseInt(String.valueOf(user.get("USER_COUNT"))); //failcount를 데이터베이스에서 호출
+                        int failCount = Integer.parseInt(String.valueOf(user.get("USER_FAILED"))); //failcount를 데이터베이스에서 호출
                         if (failCount > 0) { //failcount가 존재할 시
                             usermapper.resetFailCount(newUser.get("userId")); //failcount 초기화
                         }
                         user.remove("USER_PW");
                         return user;
                     } else { //비밀번호가 일치하지 않을 시(로그인 실패 시)
-                        int failCount = Integer.parseInt(String.valueOf(user.get("USER_COUNT")));
+                        int failCount = Integer.parseInt(String.valueOf(user.get("USER_FAILED")));
                         if (failCount >= 5) { //실패 카운트가 5이상일 시 비활성화
                             usermapper.notuseUser(newUser.get("userId"));
                             return user;
